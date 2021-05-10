@@ -19,7 +19,7 @@ exports.create_keys = function(req, res) {
   res.json(response);
 };
 
-exports.sign_tx = function(req, res) {
+exports.sign_tx = async function(req, res) {
   let networkID = req.body.networkID;
   let blockchainID = req.body.blockchainID;
   let endpoint = req.body.endpoint;
@@ -34,10 +34,10 @@ exports.sign_tx = function(req, res) {
   const addresses = keychain.getAddresses();
   const addressStrings = keychain.getAddressStrings();
   const avmUTXOResponse = await xchain.getUTXOs(addressStrings)
-  const utxos: UTXOSet = avmUTXOResponse.utxos
+  const utxos = avmUTXOResponse.utxos
   console.log(utxos);
   let sendAmount = new BN(amount);
-  let unsignedTx = xchain.buildBaseTx(utxos.utxos, sendAmount, [toAddress], addressStrings, addressStrings, assetID);
+  let unsignedTx = xchain.buildBaseTx(utxos, sendAmount, [toAddress], addressStrings, addressStrings, assetID);
   console.log(unsignedTx);
   let signedTx = unsignedTx.sign(keychain);
   let txid = xchain.issueTx(signedTx);
