@@ -27,17 +27,18 @@ exports.sign_tx = async function(req, res) {
   let assetID = req.body.assetID;
   let amount = req.body.amount;
   let toAddress = req.body.toAddress;
-  let ava = new Avalanche(endpoint, 443, "https", networkID, blockchainID);
-  let xchain = ava.XChain();
+  let memo = req.body.memo;
+  let avax = new Avalanche(endpoint, 443, "https", networkID);
+  let xchain = avax.XChain();
   let keychain = xchain.keyChain();
   let account = keychain.importKey(privateKey);
   const addresses = keychain.getAddresses();
   const addressStrings = keychain.getAddressStrings();
-  const avmUTXOResponse = await xchain.getUTXOs(addressStrings)
-  const utxos = avmUTXOResponse.utxos
-  console.log(utxos);
+  console.log(addressStrings);
+  const UTXOSet = await xchain.getUTXOs(addressStrings);
   let sendAmount = new BN(amount);
-  let unsignedTx = xchain.buildBaseTx(utxos, sendAmount, [toAddress], addressStrings, addressStrings, assetID);
+  console.log(sendAmount);
+  let unsignedTx = await xchain.buildBaseTx(UTXOSet.utxos, sendAmount, assetID, [toAddress], addressStrings, addressStrings, memo);
   console.log(unsignedTx);
   let signedTx = unsignedTx.sign(keychain);
   let txid = xchain.issueTx(signedTx);
