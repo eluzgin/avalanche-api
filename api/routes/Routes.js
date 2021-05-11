@@ -6,7 +6,7 @@ module.exports = function(app) {
   app.route('/create_keys')
     .post(controller.create_keys);
 
-  app.route('/sign_tx')
-    .post(controller.sign_tx);
+  app.route('/send_avax')
+    .post(controller.send_avax);
 
 };

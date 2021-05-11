@@ -29,19 +29,21 @@ https://faucet.avax-test.network/
 
 
 2) Create and sign transaction:
+Note amount in NAVAX units: 1 AVAX == 1000000000 NAVAX
+
 ```
-POST http://localhost:3000/sign_tx
+POST http://localhost:3000/send_avax
 Body: {
     "networkID": 5,
     "endpoint": "api.avax-test.network",
     "privateKey": "PrivateKey-2qarB8gPPWg62Cv6HTH6au4LDLMzgRNRfA2SfNivT3sm7ZZdPw",
-    "amount": 1,
+    "amount": 1000000000,
     "toAddress": "X-fuji1fxugsy4jfqglf4cjtux90auczpe7cy5wwker68",
     "memo": "Test"
 }
 Response:
 
-FIXME
+"2FtZ5Gxq9D6Uj6gWA3pGCeqShV2FrmT4gCv482cmqwtH4vzrXU"
 
 ```
 

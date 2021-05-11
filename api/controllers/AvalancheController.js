@@ -17,7 +17,7 @@ exports.create_keys = function(req, res) {
   res.json(response);
 };
 
-exports.sign_tx = async function(req, res) {
+exports.send_avax = async function(req, res) {
   const networkID = req.body.networkID;
   const endpoint = req.body.endpoint;
   const privateKey = req.body.privateKey;
