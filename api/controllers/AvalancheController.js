@@ -1,13 +1,12 @@
-const { Avalanche, BinTools, Buffer, BN } = require('avalanche');
-
-let bintools = BinTools.getInstance();
+const { Avalanche, Buffer, BN } = require('avalanche');
+const { Defaults } = require("avalanche/dist/utils");
 
 
 exports.create_keys = function(req, res) {
   let networkID = req.body.networkID;
   let endpoint = req.body.endpoint;
-  let ava = new Avalanche(endpoint, 443, "https", networkID);
-  let xchain = ava.XChain();
+  let avax = new Avalanche(endpoint, 443, "https", networkID);
+  let xchain = avax.XChain();
   let keychain = xchain.keyChain();
   let keypair = keychain.makeKey();
   let response = {
@@ -19,27 +18,22 @@ exports.create_keys = function(req, res) {
 };
 
 exports.sign_tx = async function(req, res) {
-  let networkID = req.body.networkID;
-  let endpoint = req.body.endpoint;
-  let privateKey = req.body.privateKey;
-  let assetID = req.body.assetID;
-  let amount = req.body.amount;
-  let toAddress = req.body.toAddress;
-  let memo = req.body.memo;
-  let avax = new Avalanche(endpoint, 443, "https", networkID);
-  let xchain = avax.XChain();
-  let keychain = xchain.keyChain();
-  let account = keychain.importKey(privateKey);
-  const addresses = keychain.getAddresses();
+  const networkID = req.body.networkID;
+  const endpoint = req.body.endpoint;
+  const privateKey = req.body.privateKey;
+  const assetID = Defaults.network[networkID].X.avaxAssetID
+  const amount = req.body.amount;
+  const toAddress = req.body.toAddress;
+  const memo = req.body.memo;
+  const avax = new Avalanche(endpoint, 443, "https", networkID);
+  const xchain = avax.XChain();
+  const keychain = xchain.keyChain();
+  keychain.importKey(privateKey);
   const addressStrings = keychain.getAddressStrings();
   const UTXOSet = await xchain.getUTXOs(addressStrings);
-  let sendAmount = new BN(amount);
-  let unsignedTx = await xchain.buildBaseTx(UTXOSet.utxos, sendAmount, assetID, [toAddress], addressStrings, addressStrings, memo);
-  let signedTx = unsignedTx.sign(keychain);
-  let txid = xchain.issueTx(signedTx);
-  let response = {
-    "signedTx": signedTx,
-    "txid": txid
-  }
-  res.json(response);
+  const sendAmount = new BN(amount);
+  const unsignedTx = await xchain.buildBaseTx(UTXOSet.utxos, sendAmount, assetID, [toAddress], addressStrings, addressStrings, Buffer.from(memo));
+  const signedTx = unsignedTx.sign(keychain);
+  const txid = await xchain.issueTx(signedTx);
+  res.json(txid);
 };
