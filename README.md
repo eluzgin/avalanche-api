@@ -4,6 +4,11 @@ Build: yarn
 
 Run: node server.js
 
+Fuji Testnet endpoint: api.avax-test.network
+
+Avalanche endpoint: api.avax.network
+
+
 1) Create new account keys:
 ```
 POST http://localhost:3000/create_keys
@@ -19,13 +24,16 @@ Response:
 }
 ```
 
+You can fund test accounts using faucet:
+https://faucet.avax-test.network/
+
+
 2) Create and sign transaction:
 ```
 POST http://localhost:3000/sign_tx
 Body: {
     "networkID": 5,
     "endpoint": "api.avax-test.network",
-    "assetID": "U8iRqJoiJm8xZHAacmvYyZVwqQx6uDNtQeP3CQ6fcgQk3JqnK",
     "privateKey": "PrivateKey-2qarB8gPPWg62Cv6HTH6au4LDLMzgRNRfA2SfNivT3sm7ZZdPw",
     "amount": 1,
     "toAddress": "X-fuji1fxugsy4jfqglf4cjtux90auczpe7cy5wwker68",
